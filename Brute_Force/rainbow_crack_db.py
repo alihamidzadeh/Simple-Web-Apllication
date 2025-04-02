@@ -28,10 +28,10 @@ for username, md5_hash in users:
         cracked.append((username, result[0]))
         print(f"✅ {username}: {result[0]}")
     else:
-        print(f"❌ User:{username} with Pass hash:{md5_hash} ==> Not found in rainbow table")
+        print(f"❌ User: {username} with Pass hash: {md5_hash} ==> Not found in rainbow table")
 
 # === STEP 4: Cleanup ===
 blog_conn.close()
 rainbow_conn.close()
 
-print("\n🎉 Done. Cracked", len(cracked), "passwords.")
+print("🎉 Done. Cracked", len(cracked), "passwords.")
