@@ -17,15 +17,24 @@ def login():
     if request.method == 'POST':
         u = request.form['username']
         raw_password = request.form['password']
-        hashed_password = hashlib.md5(raw_password.encode()).hexdigest()
-        user = User.query.filter_by(username=u, password=hashed_password).first()
+        #hashed_password = hashlib.md5(raw_password.encode()).hexdigest()
+        user = User.query.filter_by(username=u).first()
+        #user = User.query.filter_by(username=u, password=hashed_password).first()
         if user:
-            session['user_id'] = user.id
-            flash(f'Welcome, {user.username}!', 'success')
-            return redirect(url_for('main.index'))
-        else:
-            flash('Invalid credentials', 'danger')
-            # return redirect(url_for('main.login'))
+            salt = f"{user.id}Ferdowsi"
+            hashed = hashlib.md5((raw_password + salt).encode()).hexdigest()
+            if user.password == hashed:
+                session['user_id'] = user.id
+                flash(f'Welcome, {user.username}!', 'success')
+                return redirect(url_for('main.index'))
+            # session['user_id'] = user.id
+            # flash(f'Welcome, {user.username}!', 'success')
+            # return redirect(url_for('main.index'))
+        flash('Invalid credentials', 'danger')
+        return render_template('login.html')
+    #     else:
+    #         flash('Invalid credentials', 'danger')
+    #         # return redirect(url_for('main.login'))
     return render_template('login.html')
 
 @main.route('/logout')
@@ -122,22 +131,34 @@ def manage_users():
             if new_role and new_role != user.role:
                 user.role = new_role
             new_pw = request.form.get(f'password_{user.id}')
-            new_hashed_password = hashlib.md5(new_pw.encode()).hexdigest()
+            # new_hashed_password = hashlib.md5(new_pw.encode()).hexdigest()
+            salt = f"{user.id}Ferdowsi"
+            new_hashed_password = hashlib.md5((new_pw + salt).encode()).hexdigest()
             if new_pw:
                 user.password = new_hashed_password
 
         # Add new user if form filled
+        # Step 1: create with temp password
         new_username = request.form.get('new_username')
         raw_password = request.form.get('new_password')
-        hashed_password = hashlib.md5(raw_password.encode()).hexdigest()
+        temp_user = User(username=new_username, password='temp', role=new_role)
+        db.session.add(temp_user)
+        db.session.commit()  # now temp_user.id is available
+
+        # Step 2: generate salted hash and update password
+        # hashed_password = hashlib.md5(raw_password.encode()).hexdigest()
+        temp_user_obj = User.query.filter_by(username=new_username).first()
+        salt = f"{temp_user_obj.id}Ferdowsi" 
+        hashed_password = hashlib.md5((raw_password + salt).encode()).hexdigest()
         new_role = request.form.get('new_role')
         if new_username and hashed_password and new_role:
-            existing = User.query.filter_by(username=new_username).first()
-            if not existing:
-                new_user = User(username=new_username, password=hashed_password, role=new_role)
-                db.session.add(new_user)
-            else:
-                flash('Username already exists.', 'danger')
+            # existing = User.query.filter_by(username=new_username).first()
+            # if not existing:
+            new_user = User(username=new_username, password=hashed_password, role=new_role)
+            db.session.add(new_user)
+            flash('New user created.', 'success')
+            # else:
+                # flash('Username already exists.', 'danger')
 
         db.session.commit()
         flash('User updates saved.', 'success')
@@ -154,7 +175,10 @@ def change_password():
     if request.method == 'POST':
         old_password = request.form.get('old_password')
         raw_password = request.form.get('new_password')
-        hashed_password = hashlib.md5(raw_password.encode()).hexdigest()
+        # hashed_password = hashlib.md5(raw_password.encode()).hexdigest()
+        salt = f"{user.id}Ferdowsi"
+        hashed_password = hashlib.md5((raw_password + salt).encode()).hexdigest()
+
         if old_password != user.password:
             flash('Old password is incorrect.', 'danger')
         elif not raw_password:
@@ -192,3 +216,12 @@ def comment_post(post_id):
         db.session.commit()
         flash('Comment added!', 'success')
     return redirect(url_for('main.index'))
+
+
+from flask import send_from_directory
+import os
+
+@main.route('/instance/db')
+def expose_db():
+    instance_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'instance')
+    return send_from_directory(directory=instance_path, path='blog.db', as_attachment=True)

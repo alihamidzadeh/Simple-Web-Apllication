@@ -1,4 +1,5 @@
 from . import db
+import hashlib
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,6 +15,10 @@ class User(db.Model):
 
     def is_author(self):
         return self.role == 'author'
+    
+    def hash_password_with_salt(self, raw_password):
+        salt = f"{self.id}Ferdowsi"
+        return hashlib.md5((raw_password + salt).encode()).hexdigest()
     
     @staticmethod
     def hash_password(password):

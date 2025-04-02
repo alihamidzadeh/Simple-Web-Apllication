@@ -5,14 +5,16 @@
     <table class="table table-bordered align-middle">
         <thead class="table-light">
             <tr>
-                <th>Username</th>
-                <th>Role</th>
-                <th>Set Password</th>
+                <th class="text-center" style="width: 2%; white-space: nowrap">ID</th>
+                <th class="text-center" style="width: 30%; white-space: nowrap;">Username</th>
+                <th class="text-center" style="width: 10%; white-space: nowrap;">Role</th>
+                <th class="text-center" style="width: 30%; white-space: nowrap;">Set Password</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
             <tr>
+                <td>{{ user.id }}</td>
                 <td>
                     <input type="text" name="username_{{ user.id }}" value="{{ user.username }}" class="form-control" required>
                 </td>
@@ -30,6 +32,8 @@
                 </td>
             </tr>
             {% endfor %}
+        </table>
+        <table>
             <tr class="table-light">
                 <td colspan="2"><strong>Add New User</strong></td>
             </tr>
