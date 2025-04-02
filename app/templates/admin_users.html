@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>User Management</h2>
+<form method="POST">
+    <table class="table table-bordered align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Set Password</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>
+                    <input type="text" name="username_{{ user.id }}" value="{{ user.username }}" class="form-control" required>
+                </td>
+                
+                <td>
+                    <select name="role_{{ user.id }}" class="form-select">
+                        <option value="normal" {% if user.role == 'normal' %}selected{% endif %}>normal</option>
+                        <option value="author" {% if user.role == 'author' %}selected{% endif %}>author</option>
+                        <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>admin</option>
+                    </select>
+                </td>
+            
+                <td>
+                    <input type="password" name="password_{{ user.id }}" class="form-control" placeholder="New password">
+                </td>
+            </tr>
+            {% endfor %}
+            <tr class="table-light">
+                <td colspan="2"><strong>Add New User</strong></td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" name="new_username" placeholder="New username" class="form-control">
+                </td>
+                <td>
+                    <div class="input-group">
+                        <input type="password" name="new_password" placeholder="Password" class="form-control">
+                        <select name="new_role" class="form-select">
+                            <option value="normal">normal</option>
+                            <option value="author">author</option>
+                            <option value="admin">admin</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="btn btn-success mt-3" type="submit">Save Changes</button>
+
+    <!-- Home Icon -->
+<div class="text-center mt-5">
+    <a href="{{ url_for('main.index') }}" class="text-decoration-none text-dark">
+        <div class="fs-2">🏠</div>
+        <small>Return to Home</small>
+    </a>
+</div>
+</form>
+{% endblock %}
+
