@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <h2>Edit Post</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.title.label }}{{ form.title(class="form-control") }}</div>
+        <div class="mb-3">{{ form.content.label }}{{ form.content(class="form-control", rows=6) }}</div>
+        <button class="btn btn-success" type="submit">Update</button>
+    </form>
+</div>
+{% endblock %}

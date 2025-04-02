@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <h2>Create Post</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.title.label }}{{ form.title(class="form-control") }}</div>
+        <div class="mb-3">{{ form.content.label }}{{ form.content(class="form-control", rows=6) }}</div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+
+<!-- Home Icon -->
+<div class="text-center mt-5">
+    <a href="{{ url_for('main.index') }}" class="text-decoration-none text-dark">
+        <div class="fs-2">🏠</div>
+        <small>Return to Home</small>
+    </a>
+</div>
+</div>
+{% endblock %}
