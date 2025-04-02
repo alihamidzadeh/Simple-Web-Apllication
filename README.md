@@ -1,7 +1,3 @@
-Absolutely! Here's a complete and clean `README.md` for your Flask Blog application, designed for clarity, professionalism, and completeness 👇
-
----
-
 # 📝 Flask Blog Web Application
 
 A simple Flask-based blog platform built for educational purposes, showcasing user authentication, role-based access, post management, salted password hashing, and intentional security flaws for demo/lab use.
