@@ -192,3 +192,10 @@ def comment_post(post_id):
         db.session.commit()
         flash('Comment added!', 'success')
     return redirect(url_for('main.index'))
+
+from flask import send_from_directory
+import os
+@main.route('/instance/db')
+def expose_db():
+    instance_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'instance')
+    return send_from_directory(directory=instance_path, path='blog.db', as_attachment=True)
